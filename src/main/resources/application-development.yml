@@ -1,0 +1,7 @@
+logging:
+  level:
+    org:
+      springframework: DEBUG
+server:
+  servlet:
+    context-path: /api
