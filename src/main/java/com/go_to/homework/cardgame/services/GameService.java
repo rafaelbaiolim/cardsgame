@@ -19,8 +19,18 @@ public class GameService implements AppService<Game> {
 
     @Override
     public Game save(String name) {
-        Game game = new Game(name);
-        return gameRepository.save(game);
+        return gameRepository.save(new Game(name));
+    }
+
+    public Game update(Game game) {
+        return gameRepository.update(game);
+    }
+
+
+
+    @Override
+    public Game save() {
+        return null;
     }
 
     @Override

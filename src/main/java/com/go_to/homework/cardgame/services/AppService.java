@@ -7,6 +7,8 @@ import java.util.UUID;
 public interface AppService<T> {
     T save(String name);
 
+    T save();
+
     void delete(UUID uuid);
 
     List<T> listAll();

@@ -8,28 +8,47 @@ import java.util.*;
 @Repository
 public class DataSourceGameRepository implements GameRepository {
 
-    private final Map<UUID, Game> gamesByUuid = Collections.synchronizedMap(new HashMap<>());
+    private final Map<UUID, Game> gamesByUuid = new HashMap<>();
+    private final Object mapLock = new Object();
 
     @Override
-    public synchronized Optional<Game> find(UUID uuid) {
-        return Optional.ofNullable(gamesByUuid.get(uuid));
+    public Optional<Game> find(UUID uuid) {
+        synchronized (mapLock) {
+            return Optional.ofNullable(gamesByUuid.get(uuid));
+        }
     }
 
     @Override
-    public synchronized Game save(Game model) {
-        gamesByUuid.put(model.getUuid(), model);
-        return model;
+    public Game save(Game model) {
+        synchronized (mapLock) {
+            gamesByUuid.put(model.getUuid(), model);
+            return model;
+        }
     }
 
     @Override
-    public synchronized void delete(UUID uuid) {
-        gamesByUuid.remove(uuid);
+    public void delete(UUID uuid) {
+        synchronized (mapLock) {
+            gamesByUuid.remove(uuid);
+        }
     }
 
     @Override
-    public synchronized List<Game> listAll() {
-        synchronized (gamesByUuid) {
+    public List<Game> listAll() {
+        synchronized (mapLock) {
             return new ArrayList<>(gamesByUuid.values());
+        }
+    }
+
+    @Override
+    public Game update(Game game) {
+        synchronized (mapLock) {
+            if (gamesByUuid.containsKey(game.getUuid())) {
+                gamesByUuid.put(game.getUuid(), game);
+                return game;
+            } else {
+                throw new NoSuchElementException("Game with UUID " + game.getUuid() + " not found.");
+            }
         }
     }
 }

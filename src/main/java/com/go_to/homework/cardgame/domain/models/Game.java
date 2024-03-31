@@ -38,13 +38,12 @@ public class Game {
         this.players = players;
     }
 
-
     public List<Deck> getDecks() {
         return decks;
     }
 
-    public void setDecks(List<Deck> decks) {
-        this.decks = decks;
+    public void appendDeck(Deck deck) {
+        this.decks.add(deck);
     }
 
 }
