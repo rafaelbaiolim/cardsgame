@@ -5,7 +5,7 @@ import java.util.*;
 public class Game {
     private UUID uuid;
     private String name;
-    private Set<Player> players = new HashSet<>();
+    private List<Player> players = new ArrayList<>();
 
     private List<Deck> decks = new ArrayList<>();
 
@@ -30,11 +30,11 @@ public class Game {
         this.name = name;
     }
 
-    public Set<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Set<Player> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 

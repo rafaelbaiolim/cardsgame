@@ -13,7 +13,6 @@ public class Player {
     public Player(String name) {
         this.uuid = UUID.randomUUID();
         this.name = name;
-//        this.game = game;
     }
 
     public UUID getUuid() {

@@ -1,10 +1,14 @@
 package com.go_to.homework.cardgame.api.v1;
 
 import com.go_to.homework.cardgame.api.assemblers.GameAssembler;
+import com.go_to.homework.cardgame.api.assemblers.GameEngineAssembler;
+import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
 import com.go_to.homework.cardgame.domain.models.Deck;
 import com.go_to.homework.cardgame.domain.models.Game;
+import com.go_to.homework.cardgame.domain.models.GameEngine;
 import com.go_to.homework.cardgame.domain.models.Player;
 import com.go_to.homework.cardgame.services.DeckService;
+import com.go_to.homework.cardgame.services.GameEngineService;
 import com.go_to.homework.cardgame.services.GameService;
 import com.go_to.homework.cardgame.services.PlayerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,23 +21,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+
 @Tag(name = "Games")
 @RestController
 @RequestMapping("/api/v1/games")
 public class GameController {
 
     private final GameService gameService;
+
+    private final GameEngineService gameEngineService;
     private final DeckService deckService;
     private final PlayerService playerService;
     private final GameAssembler gameAssembler;
 
+    private final GameEngineAssembler gameEngineAssembler;
 
-    public GameController(GameService gameService, GameAssembler gameAssembler, DeckService deckService, PlayerService playerService) {
+    public GameController(GameService gameService, GameEngineService gameEngineService, GameAssembler gameAssembler, DeckService deckService, PlayerService playerService, GameEngineAssembler gameEngineAssembler) {
 
         this.gameService = gameService;
+        this.gameEngineService = gameEngineService;
         this.gameAssembler = gameAssembler;
         this.deckService = deckService;
         this.playerService = playerService;
+        this.gameEngineAssembler = gameEngineAssembler;
     }
 
     @GetMapping
@@ -61,7 +71,6 @@ public class GameController {
     @GetMapping("/{uuid}")
     public ResponseEntity<EntityModel<Game>> find(@PathVariable UUID uuid) {
         Optional<Game> gameOptional = gameService.find(uuid);
-
         return gameOptional.map(game -> ResponseEntity.ok(gameAssembler.toModel(game))).orElse(ResponseEntity.notFound().build());
     }
 
@@ -76,9 +85,7 @@ public class GameController {
         return associateWithGame(gameUuid, playerUuid, playerService::find, Game::appendPlayer);
     }
 
-    private <T> ResponseEntity<?> associateWithGame(UUID gameUuid, UUID entityUuid,
-                                                    Function<UUID, Optional<T>> findEntity,
-                                                    GameAssociation<T> associationAction) {
+    private <T> ResponseEntity<?> associateWithGame(UUID gameUuid, UUID entityUuid, Function<UUID, Optional<T>> findEntity, GameAssociation<T> associationAction) {
         Game game = gameService.find(gameUuid).orElseThrow(() -> new EntityNotFoundException("Game not found"));
         T entity = findEntity.apply(entityUuid).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
         checkEntityAssociationWithGame(entity);
@@ -100,5 +107,32 @@ public class GameController {
         }
     }
 
+    @PatchMapping("/{gameUuid}/shuffleDeckCards")
+    public ResponseEntity<?> shuffleGameEngineCards(@PathVariable UUID gameUuid) {
+        try {
+            GameEngine gameEngine = gameEngineService.shuffleCards(gameUuid);
+            Object gameEngineModel = gameEngineAssembler.toModel(gameEngine);
+            return ResponseEntity.ok(gameEngineModel);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PatchMapping("/{gameUuid}/dealCards")
+    public ResponseEntity<?> dealGameEngineDeckCards(@PathVariable UUID gameUuid) {
+        try {
+            GameEngine gameEngine = gameEngineService.dealCardToPlayer(gameUuid);
+            Object gameEngineModel = gameEngineAssembler.toModel(gameEngine);
+            return ResponseEntity.ok(gameEngineModel);
+        } catch (NoMoreCardsException e) {
+            return ResponseEntity.ok(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
 }

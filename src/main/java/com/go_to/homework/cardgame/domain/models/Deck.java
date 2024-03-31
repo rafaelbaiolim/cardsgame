@@ -7,6 +7,7 @@ import com.go_to.homework.cardgame.domain.exceptions.DeckOperationException;
 import java.util.*;
 
 public class Deck {
+    @JsonIgnore
     private UUID uuid;
     @JsonManagedReference
     private Set<Card> cards = new HashSet<>();

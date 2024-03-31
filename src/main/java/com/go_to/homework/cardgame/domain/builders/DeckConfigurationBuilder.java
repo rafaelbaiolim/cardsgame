@@ -6,8 +6,9 @@ import com.go_to.homework.cardgame.domain.models.CardSuit;
 import com.go_to.homework.cardgame.domain.models.Deck;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.go_to.homework.cardgame.domain.models.Card.createCard;
 
@@ -21,14 +22,10 @@ public class DeckConfigurationBuilder {
     }
 
     private Set<Card> build(Deck deck) {
-        Set<Card> cards = new HashSet<>();
-        for (CardSuit suit : CardSuit.values()) {
-            for (CardFace face : CardFace.values()) {
-                cards.add(createCard(face, suit, deck));
-            }
-        }
-
-        return cards;
+        return Arrays.stream(CardSuit.values())
+                .flatMap(suit -> Arrays.stream(CardFace.values())
+                        .map(face -> createCard(face, suit, deck)))
+                .collect(Collectors.toSet());
     }
 
 

@@ -1,7 +1,5 @@
 package com.go_to.homework.cardgame.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,8 +7,7 @@ public class Card {
     private UUID uuid;
     private CardFace face;
     private CardSuit suit;
-    @JsonBackReference
-    private Deck deck;
+    private UUID deckUuid;
 
     public static Card createCard(CardFace face, CardSuit suit, Deck deck) {
         return new Card(UUID.randomUUID(), face, suit, deck);
@@ -20,7 +17,7 @@ public class Card {
         this.uuid = uuid;
         this.face = face;
         this.suit = suit;
-        this.deck = deck;
+        this.deckUuid = deck.getUuid();
     }
 
     public UUID getUuid() {
@@ -47,12 +44,12 @@ public class Card {
         this.suit = suit;
     }
 
-    public Deck getDeck() {
-        return deck;
+    public UUID getDeckUuid() {
+        return deckUuid;
     }
 
-    public void setDeck(Deck deck) {
-        this.deck = deck;
+    public void setDeckUuid(UUID deckUuid) {
+        this.deckUuid = deckUuid;
     }
 
     @Override
@@ -66,6 +63,6 @@ public class Card {
 
     @Override
     public int hashCode() {
-        return Objects.hash(deck, face, suit);
+        return Objects.hash(deckUuid, face, suit);
     }
 }
