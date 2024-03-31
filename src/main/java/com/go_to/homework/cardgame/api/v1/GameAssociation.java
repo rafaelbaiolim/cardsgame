@@ -1,4 +1,6 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.api.v1;
+
+import com.go_to.homework.cardgame.domain.models.Game;
 
 @FunctionalInterface
 public interface GameAssociation<T> {

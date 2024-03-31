@@ -5,9 +5,9 @@ import com.go_to.homework.cardgame.domain.models.Deck;
 import com.go_to.homework.cardgame.domain.models.Game;
 import com.go_to.homework.cardgame.domain.models.Player;
 import com.go_to.homework.cardgame.services.DeckService;
-import com.go_to.homework.cardgame.domain.models.GameAssociation;
 import com.go_to.homework.cardgame.services.GameService;
 import com.go_to.homework.cardgame.services.PlayerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-
+@Tag(name = "Games")
 @RestController
-@RequestMapping("/v1/games")
+@RequestMapping("/api/v1/games")
 public class GameController {
 
     private final GameService gameService;

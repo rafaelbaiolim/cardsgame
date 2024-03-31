@@ -4,14 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>com.go_to</groupId>
     <artifactId>homework</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+    <name>cardsgame</name>
+    <description>Rest API for a Cards Game Application, part of homework from GoTo company</description>
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.springdoc.version>2.4.0</org.springdoc.version>
     </properties>
 
     <parent>
@@ -43,6 +45,12 @@
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${org.springdoc.version}</version>
         </dependency>
 
     </dependencies>

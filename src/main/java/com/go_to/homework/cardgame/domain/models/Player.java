@@ -1,10 +1,13 @@
 package com.go_to.homework.cardgame.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.UUID;
 
 public class Player {
     private UUID uuid;
     private String name;
+    @JsonIgnore
     private UUID gameUuid;
 
     public Player(String name) {

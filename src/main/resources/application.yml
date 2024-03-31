@@ -1,3 +1,10 @@
 spring:
   profiles:
     active: "development"
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /cardsgame-api-docs
+  swagger-ui:
+    path: /swagger-ui

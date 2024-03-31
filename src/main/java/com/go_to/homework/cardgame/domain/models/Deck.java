@@ -1,5 +1,6 @@
 package com.go_to.homework.cardgame.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.go_to.homework.cardgame.domain.exceptions.DeckOperationException;
 
@@ -9,6 +10,8 @@ public class Deck {
     private UUID uuid;
     @JsonManagedReference
     private Set<Card> cards = new HashSet<>();
+
+    @JsonIgnore
     private UUID gameUuid;
 
     public Deck() {

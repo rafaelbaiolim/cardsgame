@@ -3,6 +3,7 @@ package com.go_to.homework.cardgame.api.v1;
 import com.go_to.homework.cardgame.api.assemblers.PlayerAssembler;
 import com.go_to.homework.cardgame.domain.models.Player;
 import com.go_to.homework.cardgame.services.PlayerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+@Tag(name = "Players")
 @RestController
-@RequestMapping("/v1/players")
+@RequestMapping("/api/v1/players")
 public class PlayerController {
 
     private final PlayerService playerService;
