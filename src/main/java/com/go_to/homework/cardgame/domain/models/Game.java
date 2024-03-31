@@ -44,6 +44,12 @@ public class Game {
 
     public void appendDeck(Deck deck) {
         this.decks.add(deck);
+        deck.setGameUuid(this.getUuid());
+    }
+
+    public void appendPlayer(Player player) {
+        this.players.add(player);
+        player.setGameUuid(this.getUuid());
     }
 
 }

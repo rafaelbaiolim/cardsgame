@@ -36,7 +36,7 @@ public class DeckService implements AppService<Deck> {
         Optional<Deck> deckOptional = deckRepository.find(uuid);
         if (deckOptional.isPresent()) {
             Deck deck = deckOptional.get();
-            if (deck.getGame() != null) {
+            if (deck.getGameUuid() != null) {
                 throw new DeckOperationException("Deck remove error: This deck already has a relation with a game and cannot be deleted.");
             }
             deckRepository.delete(uuid);

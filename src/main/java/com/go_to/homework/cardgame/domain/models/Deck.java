@@ -9,7 +9,7 @@ public class Deck {
     private UUID uuid;
     @JsonManagedReference
     private Set<Card> cards = new HashSet<>();
-    private Game game;
+    private UUID gameUuid;
 
     public Deck() {
         this.uuid = UUID.randomUUID();
@@ -33,12 +33,12 @@ public class Deck {
         this.cards = cards;
     }
 
-    public Game getGame() {
-        return game;
+    public UUID getGameUuid() {
+        return this.gameUuid;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameUuid(UUID gameUuid) {
+        this.gameUuid = gameUuid;
     }
 
     @Override

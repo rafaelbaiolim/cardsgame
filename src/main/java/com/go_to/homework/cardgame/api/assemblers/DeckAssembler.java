@@ -3,7 +3,6 @@ package com.go_to.homework.cardgame.api.assemblers;
 import com.go_to.homework.cardgame.api.v1.DeckController;
 import com.go_to.homework.cardgame.api.v1.GameController;
 import com.go_to.homework.cardgame.domain.models.Deck;
-import com.go_to.homework.cardgame.domain.models.Game;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
@@ -19,9 +18,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class DeckAssembler implements SimpleRepresentationModelAssembler<Deck> {
 
     private void addLinkGame(EntityModel<Deck> resource) {
-        Game game = Objects.requireNonNull(resource.getContent()).getGame();
-        if (game != null) {
-            resource.add(linkTo(methodOn(GameController.class).find(game.getUuid())).withRel("game"));
+        UUID gameUuid = Objects.requireNonNull(resource.getContent()).getGameUuid();
+        if (gameUuid != null) {
+            resource.add(linkTo(methodOn(GameController.class).find(gameUuid)).withRel("game"));
         }
     }
 

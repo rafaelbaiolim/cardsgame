@@ -44,7 +44,7 @@ public class DataSourceDeckRepository implements DeckRepository {
     public Optional<Deck> findByGameUuid(UUID uuid) {
         synchronized (mapLock) {
             return decksByUuid.values().stream()
-                    .filter(deck -> deck.getGame() != null && deck.getGame().getUuid().equals(uuid))
+                    .filter(deck -> deck.getGameUuid() != null && deck.getGameUuid().equals(uuid))
                     .findFirst();
         }
     }
