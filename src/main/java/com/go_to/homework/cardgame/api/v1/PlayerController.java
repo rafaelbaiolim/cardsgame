@@ -2,6 +2,7 @@ package com.go_to.homework.cardgame.api.v1;
 
 import com.go_to.homework.cardgame.api.assemblers.GameEngineAssembler;
 import com.go_to.homework.cardgame.api.assemblers.PlayerAssembler;
+import com.go_to.homework.cardgame.api.dto.PlayerRequest;
 import com.go_to.homework.cardgame.domain.entity.Player;
 import com.go_to.homework.cardgame.services.GameEngineService;
 import com.go_to.homework.cardgame.services.PlayerService;
@@ -39,8 +40,8 @@ public class PlayerController {
     }
 
     @PostMapping
-    public EntityModel<Player> newPlayer(@RequestParam String name) {
-        return playerAssembler.toModel(playerService.save(name));
+    public EntityModel<Player> newPlayer(@RequestBody PlayerRequest playerRequest) {
+        return playerAssembler.toModel(playerService.save(playerRequest.getName()));
     }
 
     @DeleteMapping("/{uuid}")

@@ -43,7 +43,7 @@ public class PlayerService implements AppService<Player> {
 
     @Override
     public List<Player> listAll() {
-        eventPublisher.publishEvent(new EntityChangeEvent(null, "Listed All Players"));
+        eventPublisher.publishEvent(new EntityChangeEvent("", "Listed All Players"));
         return playerRepository.listAll();
     }
 

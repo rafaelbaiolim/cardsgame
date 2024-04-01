@@ -4,11 +4,14 @@ import com.go_to.homework.cardgame.api.assemblers.CardsGameSummaryAssembler;
 import com.go_to.homework.cardgame.api.assemblers.GameAssembler;
 import com.go_to.homework.cardgame.api.assemblers.GameEngineAssembler;
 import com.go_to.homework.cardgame.api.assemblers.PlayerAssembler;
-import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
+import com.go_to.homework.cardgame.api.dto.DeckRequest;
+import com.go_to.homework.cardgame.api.dto.GameRequest;
+import com.go_to.homework.cardgame.api.dto.PlayerRequest;
 import com.go_to.homework.cardgame.domain.entity.Deck;
 import com.go_to.homework.cardgame.domain.entity.Game;
 import com.go_to.homework.cardgame.domain.entity.GameEngine;
 import com.go_to.homework.cardgame.domain.entity.Player;
+import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
 import com.go_to.homework.cardgame.services.DeckService;
 import com.go_to.homework.cardgame.services.GameEngineService;
 import com.go_to.homework.cardgame.services.GameService;
@@ -44,10 +47,7 @@ public class GameController {
 
     private final CardsGameSummaryAssembler cardsGameSummaryAssembler;
 
-    public GameController(GameService gameService, GameEngineService gameEngineService,
-                          GameAssembler gameAssembler, DeckService deckService,
-                          PlayerService playerService, GameEngineAssembler gameEngineAssembler,
-                          PlayerAssembler playerAssembler, CardsGameSummaryAssembler cardsGameSummaryAssembler) {
+    public GameController(GameService gameService, GameEngineService gameEngineService, GameAssembler gameAssembler, DeckService deckService, PlayerService playerService, GameEngineAssembler gameEngineAssembler, PlayerAssembler playerAssembler, CardsGameSummaryAssembler cardsGameSummaryAssembler) {
 
         this.gameService = gameService;
         this.gameEngineService = gameEngineService;
@@ -66,8 +66,8 @@ public class GameController {
     }
 
     @PostMapping
-    public EntityModel<Game> newGame(@RequestParam String name) {
-        return gameAssembler.toModel(gameService.save(name));
+    public EntityModel<Game> newGame(@RequestBody GameRequest request) {
+        return gameAssembler.toModel(gameService.save(request.getName()));
     }
 
     @DeleteMapping("/{uuid}")
@@ -110,13 +110,13 @@ public class GameController {
     }
 
     @PutMapping("/{gameUuid}/decks")
-    public ResponseEntity<?> addDeckToGame(@PathVariable UUID gameUuid, @RequestParam UUID deckUuid) {
-        return associateWithGame(gameUuid, deckUuid, deckService::find, Game::appendDeck);
+    public ResponseEntity<?> addDeckToGame(@PathVariable UUID gameUuid, @RequestBody DeckRequest deckRequest) {
+        return associateWithGame(gameUuid, deckRequest.getDeckUuid(), deckService::find, Game::appendDeck);
     }
 
     @PutMapping("/{gameUuid}/players")
-    public ResponseEntity<?> addPlayerToGame(@PathVariable UUID gameUuid, @RequestParam UUID playerUuid) {
-        return associateWithGame(gameUuid, playerUuid, playerService::find, Game::appendPlayer);
+    public ResponseEntity<?> addPlayerToGame(@PathVariable UUID gameUuid, @RequestBody PlayerRequest playerRequest) {
+        return associateWithGame(gameUuid, playerRequest.getPlayerUuid(), playerService::find, Game::appendPlayer);
     }
 
     private <T> ResponseEntity<?> associateWithGame(UUID gameUuid, UUID entityUuid, Function<UUID, Optional<T>> findEntity, GameAssociation<T> associationAction) {

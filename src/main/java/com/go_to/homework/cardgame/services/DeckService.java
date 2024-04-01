@@ -54,7 +54,7 @@ public class DeckService implements AppService<Deck> {
 
     @Override
     public List listAll() {
-        eventPublisher.publishEvent(new EntityChangeEvent(null, "Listed All Decks"));
+        eventPublisher.publishEvent(new EntityChangeEvent("", "Listed All Decks"));
         return deckRepository.listAll();
     }
 
