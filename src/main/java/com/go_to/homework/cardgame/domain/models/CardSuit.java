@@ -12,4 +12,9 @@ public enum CardSuit {
     public Integer getWeight() {
         return this.weight;
     }
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

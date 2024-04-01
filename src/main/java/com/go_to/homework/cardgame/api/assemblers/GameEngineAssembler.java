@@ -19,7 +19,7 @@ public class GameEngineAssembler implements SimpleRepresentationModelAssembler<G
     @Override
     public void addLinks(EntityModel<GameEngine> resource) {
         UUID uuid = Objects.requireNonNull(resource.getContent()).getGameUuid();
-        resource.add(linkTo(methodOn(GameController.class).find(uuid)).withRel("game"));
+        resource.add(linkTo(methodOn(GameController.class).findByUuid(uuid)).withRel("game"));
     }
 
     @Override

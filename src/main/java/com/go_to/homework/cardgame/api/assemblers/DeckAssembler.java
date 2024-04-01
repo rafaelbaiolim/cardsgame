@@ -20,7 +20,7 @@ public class DeckAssembler implements SimpleRepresentationModelAssembler<Deck> {
     private void addLinkGame(EntityModel<Deck> resource) {
         UUID gameUuid = Objects.requireNonNull(resource.getContent()).getGameUuid();
         if (gameUuid != null) {
-            resource.add(linkTo(methodOn(GameController.class).find(gameUuid)).withRel("game"));
+            resource.add(linkTo(methodOn(GameController.class).findByUuid(gameUuid)).withRel("game"));
         }
     }
 

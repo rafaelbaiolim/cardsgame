@@ -8,8 +8,10 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -20,7 +22,7 @@ public class PlayerAssembler implements SimpleRepresentationModelAssembler<Playe
     private void addLinkGame(EntityModel<Player> resource) {
         UUID gameUuid = Objects.requireNonNull(resource.getContent()).getGameUuid();
         if (gameUuid != null) {
-            resource.add(linkTo(methodOn(GameController.class).find(gameUuid)).withRel("game"));
+            resource.add(linkTo(methodOn(GameController.class).findByUuid(gameUuid)).withRel("game"));
         }
     }
 
@@ -36,5 +38,16 @@ public class PlayerAssembler implements SimpleRepresentationModelAssembler<Playe
     @Override
     public void addLinks(CollectionModel<EntityModel<Player>> resources) {
         resources.add(linkTo(methodOn(PlayerController.class).listAllPlayers()).withSelfRel());
+    }
+
+    public CollectionModel<EntityModel<Player>> toCollectionModel(List<Player> players) {
+        List<EntityModel<Player>> playerModels = players.stream()
+                .map(player -> EntityModel.of(player,
+                        linkTo(methodOn(PlayerController.class).findByUUID(player.getUuid())).withSelfRel(),
+                        linkTo(methodOn(GameController.class).findByUuid(player.getGameUuid())).withRel("gamePlayers")))
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(playerModels,
+                linkTo(methodOn(GameController.class).findByUuid(players.get(0).getGameUuid())).withSelfRel());
     }
 }

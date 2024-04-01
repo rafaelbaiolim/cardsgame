@@ -1,16 +1,24 @@
 package com.go_to.homework.cardgame.domain.repositories;
 
 import com.go_to.homework.cardgame.domain.models.Card;
+import com.go_to.homework.cardgame.domain.models.Game;
 import com.go_to.homework.cardgame.domain.models.GameEngine;
+import com.go_to.homework.cardgame.domain.models.Player;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 @Repository
 public class DataSourceGameEngineRepository implements GameEngineRepository {
-
+    private final DataSourceGameRepository gameRepository;
+    private final DataSourcePlayerRepository playerRepository;
     private final Map<UUID, GameEngine> gameEnginesByUuid = new HashMap<>();
     private final Object mapLock = new Object();
+
+    public DataSourceGameEngineRepository(DataSourceGameRepository gameRepository, DataSourcePlayerRepository playerRepository) {
+        this.gameRepository = gameRepository;
+        this.playerRepository = playerRepository;
+    }
 
     @Override
     public Optional<GameEngine> find(UUID uuid) {
@@ -23,8 +31,31 @@ public class DataSourceGameEngineRepository implements GameEngineRepository {
     public GameEngine save(GameEngine model) {
         synchronized (mapLock) {
             gameEnginesByUuid.put(model.getGameUuid(), model);
+            updateGameWithNewPlayerInfo(model);
             return model;
         }
+    }
+
+    private void updateGameWithNewPlayerInfo(GameEngine gameEngine) {
+        Game game = gameRepository.find(gameEngine.getGameUuid())
+                .orElseThrow(() -> new IllegalArgumentException("Game not found for UUID: " + gameEngine.getGameUuid()));
+
+        List<Player> updatedPlayers = new ArrayList<>(game.getPlayers());
+
+        gameEngine.getPlayerCards().entrySet().forEach(entry -> {
+            UUID playerUuid = entry.getKey();
+            List<Card> cards = entry.getValue();
+
+            updatedPlayers.forEach(player -> {
+                if (player.getUuid().equals(playerUuid)) {
+                    player.setPlayerCards(cards);
+                    playerRepository.save(player);
+                }
+            });
+        });
+        game.setPlayers(updatedPlayers);
+
+        gameRepository.update(game);
     }
 
     @Override

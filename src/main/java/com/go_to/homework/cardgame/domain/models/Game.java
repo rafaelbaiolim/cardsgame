@@ -1,6 +1,10 @@
 package com.go_to.homework.cardgame.domain.models;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Game {
     private UUID uuid;
@@ -31,7 +35,9 @@ public class Game {
     }
 
     public List<Player> getPlayers() {
-        return players;
+        return players.stream()
+                .sorted(Comparator.comparingInt(Player::getHandValue).reversed())
+                .collect(Collectors.toList());
     }
 
     public void setPlayers(List<Player> players) {

@@ -1,7 +1,9 @@
 package com.go_to.homework.cardgame.api.v1;
 
+import com.go_to.homework.cardgame.api.assemblers.CardsGameSummaryAssembler;
 import com.go_to.homework.cardgame.api.assemblers.GameAssembler;
 import com.go_to.homework.cardgame.api.assemblers.GameEngineAssembler;
+import com.go_to.homework.cardgame.api.assemblers.PlayerAssembler;
 import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
 import com.go_to.homework.cardgame.domain.models.Deck;
 import com.go_to.homework.cardgame.domain.models.Game;
@@ -18,6 +20,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -26,6 +30,7 @@ import java.util.function.Function;
 @RestController
 @RequestMapping("/api/v1/games")
 public class GameController {
+
 
     private final GameService gameService;
 
@@ -36,7 +41,14 @@ public class GameController {
 
     private final GameEngineAssembler gameEngineAssembler;
 
-    public GameController(GameService gameService, GameEngineService gameEngineService, GameAssembler gameAssembler, DeckService deckService, PlayerService playerService, GameEngineAssembler gameEngineAssembler) {
+    private final PlayerAssembler playerAssembler;
+
+    private final CardsGameSummaryAssembler cardsGameSummaryAssembler;
+
+    public GameController(GameService gameService, GameEngineService gameEngineService,
+                          GameAssembler gameAssembler, DeckService deckService,
+                          PlayerService playerService, GameEngineAssembler gameEngineAssembler,
+                          PlayerAssembler playerAssembler, CardsGameSummaryAssembler cardsGameSummaryAssembler) {
 
         this.gameService = gameService;
         this.gameEngineService = gameEngineService;
@@ -44,6 +56,8 @@ public class GameController {
         this.deckService = deckService;
         this.playerService = playerService;
         this.gameEngineAssembler = gameEngineAssembler;
+        this.playerAssembler = playerAssembler;
+        this.cardsGameSummaryAssembler = cardsGameSummaryAssembler;
     }
 
     @GetMapping
@@ -69,11 +83,32 @@ public class GameController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<EntityModel<Game>> find(@PathVariable UUID uuid) {
+    public ResponseEntity<EntityModel<Game>> findByUuid(@PathVariable UUID uuid) {
         Optional<Game> gameOptional = gameService.find(uuid);
         return gameOptional.map(game -> ResponseEntity.ok(gameAssembler.toModel(game))).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{uuid}/players")
+    public ResponseEntity<CollectionModel<EntityModel<Player>>> getPlayersOfGame(@PathVariable UUID uuid) {
+        Optional<Game> gameOptional = gameService.find(uuid);
+
+        if (gameOptional.isPresent()) {
+            Game game = gameOptional.get();
+            List<Player> players = game.getPlayers();
+
+            CollectionModel<EntityModel<Player>> playerCollectionModel = playerAssembler.toCollectionModel(players);
+
+            return ResponseEntity.ok(playerCollectionModel);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{uuid}/cards/undealt")
+    public ResponseEntity<EntityModel<Map<String, Long>>> getUndealtCards(@PathVariable UUID uuid) {
+        Map<String, Long> undealtCards = gameEngineService.getUndealtCards(uuid);
+        return ResponseEntity.ok(cardsGameSummaryAssembler.toModel(uuid, undealtCards));
+    }
 
     @PutMapping("/{gameUuid}/decks")
     public ResponseEntity<?> addDeckToGame(@PathVariable UUID gameUuid, @RequestParam UUID deckUuid) {

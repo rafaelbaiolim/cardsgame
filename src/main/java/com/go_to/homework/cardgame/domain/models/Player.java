@@ -72,9 +72,13 @@ public class Player {
         this.handValue = handValue;
     }
 
+    private void calculateHandValue() {
+        this.handValue = playerCards.stream().mapToInt(card -> card.getFace().getFaceValue()).sum();
+    }
+
     public void setPlayerCards(List<Card> playerCards) {
         this.playerCards = playerCards;
-        this.handValue = playerCards.stream().mapToInt(card -> card.getFace().getFaceValue()).sum();
+        calculateHandValue();
     }
 
 }

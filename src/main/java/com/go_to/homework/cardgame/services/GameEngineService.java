@@ -25,6 +25,17 @@ public class GameEngineService {
         this.playerRepository = playerRepository;
     }
 
+    public Map<String, Long> getUndealtCards(UUID gameUuid) {
+
+        GameEngine gameEngine = gameEngineRepository.find(gameUuid)
+                .orElseThrow(() -> new IllegalArgumentException("Game not found for UUID: " + gameUuid));
+
+        List<Card> undealtCards = gameEngine.getShuffledDeck();
+
+        return undealtCards.stream()
+                .collect(Collectors.groupingBy(card -> card.getSuit().toString(), Collectors.counting()));
+    }
+
     public GameEngine shuffleCards(UUID gameUuid) {
 
         Game game = gameRepository.find(gameUuid)
@@ -69,18 +80,9 @@ public class GameEngineService {
 
         int nextPlayerIndex = (gameEngine.getCurrentPlayerIndex() + 1) % game.getPlayers().size();
         gameEngine.setCurrentPlayerIndex(nextPlayerIndex);
-        return gameEngineRepository.save(gameEngine);
-    }
 
-    public void updatePlayerInGame(UUID gameUuid, Player updatedPlayer) {
-        Game game = gameRepository.find(gameUuid)
-                .orElseThrow(() -> new IllegalArgumentException("Game not found for UUID: " + gameUuid));
-
-        // Replace the old player object with the updated one
-        game.getPlayers().replaceAll(player -> player.getUuid().equals(updatedPlayer.getUuid()) ? updatedPlayer : player);
-
-        // Save the updated game
-        gameRepository.update(game);
+        GameEngine gameEngineSaved = gameEngineRepository.save(gameEngine);
+        return gameEngineSaved;
     }
 
     public Player getPlayerCards(UUID playerUuid) {
@@ -91,10 +93,6 @@ public class GameEngineService {
         Player currentPlayer = player.get();
         Player updatedPLayer = new Player(currentPlayer.getName(), currentPlayer.getUuid(), currentPlayer.getGameUuid(),
                 gameEngine.get().getPlayerCards().get(playerUuid));
-
-        //@TODO Change this to be in DealCards
-        playerRepository.save(updatedPLayer);
-        updatePlayerInGame(gameEngine.get().getGameUuid(), updatedPLayer);
 
         return updatedPLayer;
     }
