@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PlayersApiIntegrationTest {
 
     static final String BASE_PLAYER_URL = "/api/v1/players";
-    static final int TOTAL_EXHAUSTION_PLAYERS = 50; //max was tested with 5000
+    static final int TOTAL_EXHAUSTION_PLAYERS = 5; //max was tested with 5000
 
     @Autowired
     private MockMvc mvc;

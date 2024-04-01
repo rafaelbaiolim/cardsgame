@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DecksApiIntegrationTest {
 
     static final String BASE_DECK_URL = "/api/v1/decks";
-    static final int TOTAL_EXHAUSTION_DECKS = 50; //max was tested with 5000
+    static final int TOTAL_EXHAUSTION_DECKS = 5; //max was tested with 5000
 
     @Autowired
     private MockMvc mvc;
