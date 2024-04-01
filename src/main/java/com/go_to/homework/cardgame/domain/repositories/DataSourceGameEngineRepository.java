@@ -1,5 +1,6 @@
 package com.go_to.homework.cardgame.domain.repositories;
 
+import com.go_to.homework.cardgame.domain.models.Card;
 import com.go_to.homework.cardgame.domain.models.GameEngine;
 import org.springframework.stereotype.Repository;
 
@@ -38,6 +39,16 @@ public class DataSourceGameEngineRepository implements GameEngineRepository {
         synchronized (mapLock) {
             return new ArrayList<>(gameEnginesByUuid.values());
         }
+    }
+
+    public Optional<GameEngine> getCurrentCardsFromPlayer(UUID playerUuid) {
+        for (GameEngine gameEngine : gameEnginesByUuid.values()) {
+            List<Card> cards = gameEngine.getPlayerCards().get(playerUuid);
+            if (cards != null) {
+                return Optional.of(gameEngine);
+            }
+        }
+        return Optional.empty();
     }
 
 }

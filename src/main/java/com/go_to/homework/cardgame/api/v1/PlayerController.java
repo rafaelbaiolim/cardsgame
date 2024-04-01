@@ -1,7 +1,9 @@
 package com.go_to.homework.cardgame.api.v1;
 
+import com.go_to.homework.cardgame.api.assemblers.GameEngineAssembler;
 import com.go_to.homework.cardgame.api.assemblers.PlayerAssembler;
 import com.go_to.homework.cardgame.domain.models.Player;
+import com.go_to.homework.cardgame.services.GameEngineService;
 import com.go_to.homework.cardgame.services.PlayerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
@@ -18,11 +20,15 @@ import java.util.UUID;
 public class PlayerController {
 
     private final PlayerService playerService;
+    private final GameEngineService gameEngineService;
+    private final GameEngineAssembler gameEngineAssembler;
     private final PlayerAssembler playerAssembler;
 
-    public PlayerController(PlayerService playerService, PlayerAssembler playerAssembler) {
+    public PlayerController(PlayerService playerService, GameEngineService gameEngineService, GameEngineAssembler gameEngineAssembler, PlayerAssembler playerAssembler) {
         super();
         this.playerService = playerService;
+        this.gameEngineService = gameEngineService;
+        this.gameEngineAssembler = gameEngineAssembler;
         this.playerAssembler = playerAssembler;
     }
 
@@ -53,5 +59,11 @@ public class PlayerController {
         Optional<Player> playerOptional = playerService.find(uuid);
 
         return playerOptional.map(player -> ResponseEntity.ok(playerAssembler.toModel(player))).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("{playeruuid}/cards")
+    public ResponseEntity<EntityModel<Player>> cardsOfPlayer(@PathVariable(name = "playeruuid") UUID playerUuid) {
+        EntityModel<Player> gameEngineModel = playerAssembler.toModel(gameEngineService.getPlayerCards(playerUuid));
+        return ResponseEntity.ok(gameEngineModel);
     }
 }

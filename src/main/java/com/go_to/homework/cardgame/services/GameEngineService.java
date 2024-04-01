@@ -1,17 +1,13 @@
 package com.go_to.homework.cardgame.services;
 
 import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
-import com.go_to.homework.cardgame.domain.models.Card;
-import com.go_to.homework.cardgame.domain.models.Game;
-import com.go_to.homework.cardgame.domain.models.GameEngine;
+import com.go_to.homework.cardgame.domain.models.*;
 import com.go_to.homework.cardgame.domain.repositories.DataSourceGameEngineRepository;
 import com.go_to.homework.cardgame.domain.repositories.DataSourceGameRepository;
+import com.go_to.homework.cardgame.domain.repositories.DataSourcePlayerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,9 +16,13 @@ public class GameEngineService {
     private final DataSourceGameRepository gameRepository;
     private final DataSourceGameEngineRepository gameEngineRepository;
 
-    public GameEngineService(DataSourceGameRepository gameRepository, DataSourceGameEngineRepository gameEngineRepository) {
+    private final DataSourcePlayerRepository playerRepository;
+
+    public GameEngineService(DataSourceGameRepository gameRepository,
+                             DataSourceGameEngineRepository gameEngineRepository, DataSourcePlayerRepository playerRepository) {
         this.gameRepository = gameRepository;
         this.gameEngineRepository = gameEngineRepository;
+        this.playerRepository = playerRepository;
     }
 
     public GameEngine shuffleCards(UUID gameUuid) {
@@ -53,7 +53,6 @@ public class GameEngineService {
     }
 
     public GameEngine dealCardToPlayer(UUID gameUuid) {
-
         GameEngine gameEngine = gameEngineRepository.find(gameUuid)
                 .orElseThrow(() -> new IllegalArgumentException("Please shuffle cards before deal it to Players: " + gameUuid));
 
@@ -71,7 +70,33 @@ public class GameEngineService {
         int nextPlayerIndex = (gameEngine.getCurrentPlayerIndex() + 1) % game.getPlayers().size();
         gameEngine.setCurrentPlayerIndex(nextPlayerIndex);
         return gameEngineRepository.save(gameEngine);
+    }
 
+    public void updatePlayerInGame(UUID gameUuid, Player updatedPlayer) {
+        Game game = gameRepository.find(gameUuid)
+                .orElseThrow(() -> new IllegalArgumentException("Game not found for UUID: " + gameUuid));
+
+        // Replace the old player object with the updated one
+        game.getPlayers().replaceAll(player -> player.getUuid().equals(updatedPlayer.getUuid()) ? updatedPlayer : player);
+
+        // Save the updated game
+        gameRepository.update(game);
+    }
+
+    public Player getPlayerCards(UUID playerUuid) {
+        Optional<GameEngine> gameEngine = Optional.ofNullable(gameEngineRepository.getCurrentCardsFromPlayer(playerUuid)
+                .orElseThrow(() -> new IllegalArgumentException("Player cards not found for UUID: " + playerUuid)));
+
+        Optional<Player> player = playerRepository.find(playerUuid);
+        Player currentPlayer = player.get();
+        Player updatedPLayer = new Player(currentPlayer.getName(), currentPlayer.getUuid(), currentPlayer.getGameUuid(),
+                gameEngine.get().getPlayerCards().get(playerUuid));
+
+        //@TODO Change this to be in DealCards
+        playerRepository.save(updatedPLayer);
+        updatePlayerInGame(gameEngine.get().getGameUuid(), updatedPLayer);
+
+        return updatedPLayer;
     }
 
 

@@ -24,12 +24,6 @@ public class PlayerAssembler implements SimpleRepresentationModelAssembler<Playe
         }
     }
 
-    private void addLinkCards(EntityModel<Player> resource) {
-        UUID gameUuid = Objects.requireNonNull(resource.getContent()).getGameUuid();
-        if (gameUuid != null) {
-//            resource.add(linkTo(methodOn(PlayerController.class).find(game.getUuid())).withRel("cards"));
-        }
-    }
 
     @Override
     public void addLinks(EntityModel<Player> resource) {
@@ -37,7 +31,6 @@ public class PlayerAssembler implements SimpleRepresentationModelAssembler<Playe
         resource.add(linkTo(methodOn(PlayerController.class).findByUUID(uuid)).withSelfRel());
         resource.add(linkTo(methodOn(PlayerController.class).listAllPlayers()).withRel("players"));
         addLinkGame(resource);
-        addLinkCards(resource);
     }
 
     @Override

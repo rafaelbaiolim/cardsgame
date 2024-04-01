@@ -3,7 +3,7 @@ package com.go_to.homework.cardgame.domain.models;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Card {
+public class Card implements Comparable<Card> {
     private UUID uuid;
     private CardFace face;
     private CardSuit suit;
@@ -64,5 +64,10 @@ public class Card {
     @Override
     public int hashCode() {
         return Objects.hash(deckUuid, face, suit);
+    }
+
+    @Override
+    public int compareTo(Card o) {
+        return this.face.getFaceValue() - o.face.getFaceValue();
     }
 }
