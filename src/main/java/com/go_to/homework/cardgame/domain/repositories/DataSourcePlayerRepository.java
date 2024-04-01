@@ -40,15 +40,10 @@ public class DataSourcePlayerRepository implements PlayerRepository {
         }
     }
 
-//    @Override
-//    public Player update(Player player) {
-//        synchronized (mapLock) {
-//            if (playersByUuid.containsKey(player.getUuid())) {
-//                playersByUuid.put(player.getUuid(), player);
-//                return player;
-//            } else {
-//                throw new NoSuchElementException("Player with UUID " + player.getUuid() + " not found.");
-//            }
-//        }
-//    }
+    @Override
+    public void deleteAll() {
+        synchronized (mapLock) {
+            playersByUuid.clear();
+        }
+    }
 }

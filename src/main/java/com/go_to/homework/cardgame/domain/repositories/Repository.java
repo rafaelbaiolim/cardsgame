@@ -12,4 +12,6 @@ public interface Repository<T> {
     List<T> listAll();
 
     Optional<T> find(UUID uuid);
+
+    void deleteAll();
 }

@@ -51,4 +51,11 @@ public class DataSourceGameRepository implements GameRepository {
             }
         }
     }
+
+    @Override
+    public void deleteAll() {
+        synchronized (mapLock) {
+            gamesByUuid.clear();
+        }
+    }
 }

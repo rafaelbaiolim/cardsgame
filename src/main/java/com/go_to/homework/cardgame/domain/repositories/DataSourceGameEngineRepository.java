@@ -82,4 +82,10 @@ public class DataSourceGameEngineRepository implements GameEngineRepository {
         return Optional.empty();
     }
 
+    @Override
+    public void deleteAll() {
+        synchronized (mapLock) {
+            gameEnginesByUuid.clear();
+        }
+    }
 }

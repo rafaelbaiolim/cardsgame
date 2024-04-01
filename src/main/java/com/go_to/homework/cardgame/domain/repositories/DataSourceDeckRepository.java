@@ -19,6 +19,14 @@ public class DataSourceDeckRepository implements DeckRepository {
     }
 
     @Override
+    public void deleteAll() {
+        synchronized (mapLock) {
+            decksByUuid.clear();
+
+        }
+    }
+
+    @Override
     public Deck save(Deck model) {
         synchronized (mapLock) {
             decksByUuid.put(model.getUuid(), model);
