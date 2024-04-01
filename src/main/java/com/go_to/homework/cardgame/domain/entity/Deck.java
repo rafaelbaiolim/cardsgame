@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -50,5 +50,10 @@ public class Deck {
         if (this == obj) return true;
         if (!(obj instanceof Deck o)) return false;
         return Objects.equals(uuid, o.uuid);
+    }
+
+    @Override
+    public String toString() {
+        return "%s".formatted(uuid);
     }
 }

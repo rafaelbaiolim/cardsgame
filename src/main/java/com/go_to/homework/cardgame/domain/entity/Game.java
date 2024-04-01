@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -56,6 +56,11 @@ public class Game {
     public void appendPlayer(Player player) {
         this.players.add(player);
         player.setGameUuid(this.getUuid());
+    }
+
+    @Override
+    public String toString() {
+        return "[%s], %s".formatted(uuid, name.toLowerCase());
     }
 
 }

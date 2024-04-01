@@ -1,6 +1,6 @@
 package com.go_to.homework.cardgame.domain.repositories;
 
-import com.go_to.homework.cardgame.domain.models.Deck;
+import com.go_to.homework.cardgame.domain.entity.Deck;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

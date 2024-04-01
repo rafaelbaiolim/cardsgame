@@ -2,7 +2,7 @@ package com.go_to.homework.cardgame.api.assemblers;
 
 import com.go_to.homework.cardgame.api.v1.GameController;
 import com.go_to.homework.cardgame.api.v1.PlayerController;
-import com.go_to.homework.cardgame.domain.models.Player;
+import com.go_to.homework.cardgame.domain.entity.Player;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;

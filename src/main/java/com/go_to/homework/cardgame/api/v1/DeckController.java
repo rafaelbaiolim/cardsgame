@@ -1,7 +1,7 @@
 package com.go_to.homework.cardgame.api.v1;
 
 import com.go_to.homework.cardgame.api.assemblers.DeckAssembler;
-import com.go_to.homework.cardgame.domain.models.Deck;
+import com.go_to.homework.cardgame.domain.entity.Deck;
 import com.go_to.homework.cardgame.services.DeckService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;

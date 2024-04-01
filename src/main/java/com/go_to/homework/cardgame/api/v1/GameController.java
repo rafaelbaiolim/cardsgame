@@ -5,10 +5,10 @@ import com.go_to.homework.cardgame.api.assemblers.GameAssembler;
 import com.go_to.homework.cardgame.api.assemblers.GameEngineAssembler;
 import com.go_to.homework.cardgame.api.assemblers.PlayerAssembler;
 import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
-import com.go_to.homework.cardgame.domain.models.Deck;
-import com.go_to.homework.cardgame.domain.models.Game;
-import com.go_to.homework.cardgame.domain.models.GameEngine;
-import com.go_to.homework.cardgame.domain.models.Player;
+import com.go_to.homework.cardgame.domain.entity.Deck;
+import com.go_to.homework.cardgame.domain.entity.Game;
+import com.go_to.homework.cardgame.domain.entity.GameEngine;
+import com.go_to.homework.cardgame.domain.entity.Player;
 import com.go_to.homework.cardgame.services.DeckService;
 import com.go_to.homework.cardgame.services.GameEngineService;
 import com.go_to.homework.cardgame.services.GameService;
@@ -30,7 +30,6 @@ import java.util.function.Function;
 @RestController
 @RequestMapping("/api/v1/games")
 public class GameController {
-
 
     private final GameService gameService;
 

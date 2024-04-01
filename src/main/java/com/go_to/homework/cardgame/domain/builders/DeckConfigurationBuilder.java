@@ -1,16 +1,16 @@
 package com.go_to.homework.cardgame.domain.builders;
 
-import com.go_to.homework.cardgame.domain.models.Card;
-import com.go_to.homework.cardgame.domain.models.CardFace;
-import com.go_to.homework.cardgame.domain.models.CardSuit;
-import com.go_to.homework.cardgame.domain.models.Deck;
+import com.go_to.homework.cardgame.domain.entity.Card;
+import com.go_to.homework.cardgame.domain.entity.CardFace;
+import com.go_to.homework.cardgame.domain.entity.CardSuit;
+import com.go_to.homework.cardgame.domain.entity.Deck;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.go_to.homework.cardgame.domain.models.Card.createCard;
+import static com.go_to.homework.cardgame.domain.entity.Card.createCard;
 
 @Component
 public class DeckConfigurationBuilder {

@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -79,6 +79,11 @@ public class Player {
     public void setPlayerCards(List<Card> playerCards) {
         this.playerCards = playerCards;
         calculateHandValue();
+    }
+
+    @Override
+    public String toString() {
+        return "[%s] %s".formatted(uuid, name);
     }
 
 }

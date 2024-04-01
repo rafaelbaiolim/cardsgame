@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 import java.util.*;
 
@@ -40,5 +40,10 @@ public class GameEngine {
 
     public void setPlayerCards(Map<UUID, List<Card>> playerCards) {
         this.playerCards = playerCards;
+    }
+
+    @Override
+    public String toString() {
+        return "[Game UUID: %s]".formatted(gameUuid);
     }
 }

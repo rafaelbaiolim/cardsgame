@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 public enum CardFace {
     ACE(1),
@@ -23,5 +23,10 @@ public enum CardFace {
 
     public Integer getFaceValue() {
         return this.faceValue;
+    }
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
     }
 }

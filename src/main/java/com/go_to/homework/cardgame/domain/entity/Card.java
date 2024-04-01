@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -57,8 +57,7 @@ public class Card implements Comparable<Card> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return face == card.face &&
-                suit == card.suit;
+        return face == card.face && suit == card.suit;
     }
 
     @Override
@@ -69,5 +68,10 @@ public class Card implements Comparable<Card> {
     @Override
     public int compareTo(Card o) {
         return this.face.getFaceValue() - o.face.getFaceValue();
+    }
+
+    @Override
+    public String toString() {
+        return "[Card UUID %s][Deck UUID %s] Face: %s, Suit: %s".formatted(deckUuid, uuid, face.toString(), suit.toString());
     }
 }

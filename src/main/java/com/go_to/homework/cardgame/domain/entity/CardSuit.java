@@ -1,4 +1,4 @@
-package com.go_to.homework.cardgame.domain.models;
+package com.go_to.homework.cardgame.domain.entity;
 
 public enum CardSuit {
     HEARTS(4), SPADES(3), CLUBS(2), DIAMONDS(1);

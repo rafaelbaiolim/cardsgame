@@ -1,10 +1,12 @@
 package com.go_to.homework.cardgame.services;
 
+import com.go_to.homework.cardgame.domain.events.EntityChangeEvent;
 import com.go_to.homework.cardgame.domain.exceptions.NoMoreCardsException;
-import com.go_to.homework.cardgame.domain.models.*;
+import com.go_to.homework.cardgame.domain.entity.*;
 import com.go_to.homework.cardgame.domain.repositories.DataSourceGameEngineRepository;
 import com.go_to.homework.cardgame.domain.repositories.DataSourceGameRepository;
 import com.go_to.homework.cardgame.domain.repositories.DataSourcePlayerRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,11 +20,16 @@ public class GameEngineService {
 
     private final DataSourcePlayerRepository playerRepository;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public GameEngineService(DataSourceGameRepository gameRepository,
-                             DataSourceGameEngineRepository gameEngineRepository, DataSourcePlayerRepository playerRepository) {
+                             DataSourceGameEngineRepository gameEngineRepository,
+                             DataSourcePlayerRepository playerRepository,
+                             ApplicationEventPublisher eventPublisher) {
         this.gameRepository = gameRepository;
         this.gameEngineRepository = gameEngineRepository;
         this.playerRepository = playerRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public Map<String, Long> getUndealtCards(UUID gameUuid) {
@@ -32,6 +39,7 @@ public class GameEngineService {
 
         List<Card> undealtCards = gameEngine.getShuffledDeck();
 
+        eventPublisher.publishEvent(new EntityChangeEvent(gameUuid, "Undealt Cards was verified for Game"));
         return undealtCards.stream()
                 .collect(Collectors.groupingBy(card -> card.getSuit().toString(), Collectors.counting()));
     }
@@ -59,6 +67,7 @@ public class GameEngineService {
                     return newGameEngine;
                 });
 
+        eventPublisher.publishEvent(new EntityChangeEvent(gameEngine, "Shuffle Deck Game Requested"));
         return gameEngineRepository.save(gameEngine);
 
     }
@@ -82,6 +91,8 @@ public class GameEngineService {
         gameEngine.setCurrentPlayerIndex(nextPlayerIndex);
 
         GameEngine gameEngineSaved = gameEngineRepository.save(gameEngine);
+
+        eventPublisher.publishEvent(new EntityChangeEvent(gameEngineSaved, "Deal card was Requested"));
         return gameEngineSaved;
     }
 
@@ -94,6 +105,7 @@ public class GameEngineService {
         Player updatedPLayer = new Player(currentPlayer.getName(), currentPlayer.getUuid(), currentPlayer.getGameUuid(),
                 gameEngine.get().getPlayerCards().get(playerUuid));
 
+        eventPublisher.publishEvent(new EntityChangeEvent(updatedPLayer, "Card of Players was Listed"));
         return updatedPLayer;
     }
 
